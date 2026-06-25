@@ -68,8 +68,32 @@ cd ../api
 
 ## Environment variables
 
-Copy `.env.example` to `.env` in each project and fill in the values.
-Real `.env` files are ignored by Git.
+Both projects use `.env` files for configuration. The `.env` files are gitignored;
+each project has a `.env.example` template you copy and fill in.
+
+### First-time setup
+
+```bash
+# Backend
+cp api/.env.example api/.env
+# then edit api/.env and fill in your real DB_URL, DB_USER, DB_PASSWORD
+
+# Frontend
+cp storefront/.env.example storefront/.env
+# PUBLIC_API_URL can stay as http://localhost:8080 for local dev
+```
+
+### Variables reference
+
+| Variable | Project | Purpose | Example |
+|---|---|---|---|
+| `DB_URL` | `api/` | PostgreSQL JDBC URL (Neon) | `jdbc:postgresql://ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require` |
+| `DB_USER` | `api/` | Database username | `neondb_owner` |
+| `DB_PASSWORD` | `api/` | Database password | `npg_xxx...` |
+| `PUBLIC_API_URL` | `storefront/` | Base URL of the backend, exposed to the browser | `http://localhost:8080` |
+
+> ⚠️ **Never commit a real `.env`.** The root `.gitignore` excludes it. The
+> `.env.example` files are safe to commit because they only contain placeholders.
 
 ## Project methodology
 
