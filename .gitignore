@@ -45,7 +45,8 @@ pnpm-debug.log*
 
 # IDEs and editors
 .idea/
-.vscode/
+.vscode/launch.json
+.vscode/*.code-workspace
 *.iml
 *.iws
 *.ipr

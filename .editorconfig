@@ -1,0 +1,23 @@
+# EditorConfig: https://editorconfig.org
+# Mantiene el estilo consistente entre editores (VS Code, IntelliJ, Vim, etc.)
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Java / Kotlin / XML: convención 4 espacios
+[*.{java,kt,kts,xml}]
+indent_size = 4
+
+# Markdown: no quitar espacios al final (dos espacios = salto de línea en MD)
+[*.md]
+trim_trailing_whitespace = false
+
+# Archivos generados por Maven wrapper
+[.mvn/wrapper/maven-wrapper.properties]
+insert_final_newline = true
