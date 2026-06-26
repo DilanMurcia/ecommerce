@@ -7,7 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.text.Normalizer;
 import java.time.Instant;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "categories")
@@ -17,8 +20,11 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 120)
+    private String slug;
 
     @Column(length = 300)
     private String description;
@@ -29,14 +35,27 @@ public class Category {
     protected Category() {
     }
 
-    public Category(String name, String description) {
+    public Category(String name, String slug, String description) {
         this.name = name;
+        this.slug = slug;
         this.description = description;
     }
 
     @jakarta.persistence.PrePersist
     void onCreate() {
         this.createdAt = Instant.now();
+    }
+
+    public static String slugify(String input) {
+        if (input == null) {
+            return "";
+        }
+        String normalized = Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        String cleaned = normalized.toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("(^-|-$)", "");
+        return cleaned;
     }
 
     public Long getId() {
@@ -49,6 +68,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getDescription() {
