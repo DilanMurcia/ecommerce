@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductGrid from '../../components/ProductGrid.astro';
+import ProductBrowser from '../../components/ProductBrowser.tsx';
+import { getCategories, getProducts } from '../../lib/api';
+import type { CategoryDTO, PagedResponse, ProductSummaryDTO } from '../../lib/types';
+
+let categories: CategoryDTO[] = [];
+let initialProducts: PagedResponse<ProductSummaryDTO> = {
+  content: [],
+  page: 0,
+  size: 12,
+  totalElements: 0,
+  totalPages: 0,
+  hasNext: false,
+};
+let loadError: string | null = null;
+
+try {
+  [categories, initialProducts] = await Promise.all([getCategories(), getProducts({ size: 12 })]);
+} catch (error) {
+  loadError = error instanceof Error ? error.message : 'Failed to load data';
+}
+---
+
+<BaseLayout title="Shop all products — ecommerce">
+  <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold tracking-tight text-gray-900">All products</h1>
+      <p class="mt-2 text-sm text-gray-600">Browse our collection of custom-designed items.</p>
+    </div>
+
+    {
+      loadError ? (
+        <div class="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+          <p class="text-sm text-red-700">
+            Could not load products. Make sure the backend is running on{' '}
+            <code class="rounded bg-red-100 px-1">http://localhost:8080</code>.
+          </p>
+          <p class="mt-2 text-xs text-red-600">{loadError}</p>
+        </div>
+      ) : (
+        <ProductBrowser client:load categories={categories} initialProducts={initialProducts} />
+      )
+    }
+
+    <!-- Initial server-rendered grid shown while React island hydrates -->
+    <noscript>
+      <div class="mt-8">
+        <ProductGrid products={initialProducts.content} />
+      </div>
+    </noscript>
+  </section>
+</BaseLayout>
